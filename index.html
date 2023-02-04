@@ -29,8 +29,6 @@
 	
 	
 	
-  <link rel="stylesheet" href="libs/reveal.js/4.3.1/plugin/customcontrols/style.css">
-  
 	
 
 
@@ -75,7 +73,17 @@
     
         <section >
             
-            <p>p5勉強会</p>
+            <style type="text/css">
+  .reveal h1,
+  .reveal h2,
+  .reveal h3,
+  .reveal h4,
+  .reveal h5,
+  .reveal h6 {
+    text-transform: none;
+  }
+</style>
+<h1>p5勉強会</h1>
 
             </section>
     
@@ -100,7 +108,7 @@
 <p>使用してるもの : p5.js, glslがメイン。後はProcessing, openframeworksとかも偶に。</p>
 </li>
 <li>
-<p>(最近はUnityやBlenderにも少々手を出し始めた)</p>
+<p>(最近はUnityやBlenderにも少々手を出し始めたり)</p>
 </li>
 </ul>
 
@@ -171,7 +179,7 @@ int main(void)
     
         <section >
             
-            <h3>今回のテーマ</h3>
+            <h1>今回のテーマ</h1>
 
             </section>
     
@@ -181,13 +189,21 @@ int main(void)
     
         <section >
             
-            <h3>目次</h3>
+            <h2>作業環境についてのお話</h2>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>目次</h2>
 <ul>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
-<li></li>
+<li>p5.jsはどんな作業環境がある？</li>
+<li>自分のやり方の紹介</li>
+<li>まとめ</li>
 </ul>
 
             </section>
@@ -196,168 +212,11 @@ int main(void)
 
 
     
-    <section>
         <section >
             
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                <p>–</p>
+            <h2>どんな作業環境がある？</h2>
 
             </section>
-        
-
-    </section>
-    
-
-
-
-    
-    <section>
-        <section >
-            <p>–</p>
-
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                <p>–</p>
-
-            </section>
-        
-
-    </section>
-    
-
-
-
-    
-    <section>
-        <section >
-            <p>–</p>
-
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                <h3>平面に画像を貼り付けるスケッチ</h3>
-<pre><code class="language-js">let gWidth = 450;       // メッシュの横の長さ
-let gHeight = 300;      // メッシュの縦の長さ
-
-let len = 10;           // 小さな四角形の1辺の長さ 
-let col = gWidth/len;   // 全体の横の長さをlenで割って、行の点の数を求める
-let row = gHeight/len;  // 全体の縦の長さをlenで割って、列の点の数を求める
-
-let graphics;
-
-function setup() {
-    createCanvas(600, 600, WEBGL);  // texture()を使うにはWEBGLモードでなければならない
-    background(color(&quot;#255699&quot;));  // 背景塗り潰し
-
-    graphics = createGraphics(gWidth, gHeight);  // 平面と同じサイズで作成
-    graphics.background(255);  // 新たな白で描画領域は塗りつぶす
-    graphics.ellipseMode(CENTER); // 円を描画する際はその中心を配置基準とする
-    graphics.rectMode(CENTER);  // 四角を描画する際はその中心を配置基準とする
-    graphics.noStroke();  // 線は書かない
-
-    graphics.push();  // 描画する上での設定を保存
-    graphics.translate(graphics.width/2, graphics.height/2);  // 描画領域の中心を原点とする
-    graphics.fill(color(&quot;#50d0d0&quot;)); // 水色
-    graphics.ellipse(-120, -80, 75); // 円を描く
-
-    graphics.fill(color(&quot;#be1e3e&quot;)); // 赤色
-    graphics.rect(120, -80, 75, 75); // 四角を描く
-
-    graphics.fill(color(&quot;#7967c3&quot;)); // 紫色
-    graphics.rect(-120, 80, 75, 75); // 四角を描く
-
-    graphics.fill(color(&quot;#ffc639&quot;)); // 黄色
-    graphics.ellipse(120, 80, 75); // 円を描く
-    graphics.pop(); // 描画する上での設定を元に戻す
-
-    textureMode(NORMAL);  // 画像を貼る際に画像上の位置指定を0~1で行うようにする
-}
-
-function draw() {
-    background(color(&quot;#255699&quot;));  // 背景塗り潰し
-
-    translate(-gWidth/2, -gHeight/2);  // 平面を中央に置くために必要
-    noFill();  // 塗り潰ししない
-    stroke(255);  // 白い線
-
-    texture(graphics);                           // 画像を貼り付ける宣言
-    for (let y = 0; y &lt; row - 1; y++) {          // 1周毎に次の列の頂点まで見るので列数-1まで
-        beginShape(TRIANGLE_STRIP);              // 順に連結した三角形 を生成する
-        for (let x = 0; x &lt; col; x++) {          // 1行の頂点全てで見ていく
-            // uv座標(0~1)を求める
-            let u = map(x, 0, col-1, 0, 1);      
-            let v1 = map(y, 0, row-1, 0, 1);
-            let v2 = map(y+1, 0, row-1, 0, 1);
-
-            vertex(x * len, y * len, u, v1);        // 位置座標、uv座標
-            vertex(x * len, (y + 1) * len, u, v2);  // 位置座標、uv座標
-        }
-        endShape();                              // 1列分が終わったら一旦区切る
-    }
-}
-
-</code></pre>
-<font size="5">
-<p class="fragment current-only" data-code-focus="11">createCanvasでWEBGLモードを指定しなければtexture()を使えないので指定します。</p>
-<p class="fragment current-only" data-code-focus="14-33">貼り付ける画像を生成</p>
-<p class="fragment current-only" data-code-focus="41">描画モードをWEBGLにすることで画面中央が原点になるので位置調整</p>
-<p class="fragment current-only" data-code-focus="48-54">uv座標を計算し、平面を作るvertexの位置座標の後に設定</p>
-</font>
-            </section>
-        
-            <section >
-                
-            </section>
-        
-
-    </section>
-    
-
-
-
-    
-    <section>
-        <section >
-            
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                
-            </section>
-        
-            <section >
-                
-            </section>
-        
-
-    </section>
     
 
 
@@ -365,8 +224,207 @@ function draw() {
     
         <section >
             
-            <p>–</p>
-<p>–</p>
+            <h2>主要な作業環境</h2>
+<ul>
+<li>OpenProcessing</li>
+<li>p5.js Web Editor</li>
+<li>Visual Studio Codeなどのエディター</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>OpenProcessing について</h3>
+<ul>
+<li>Web上で起動できる。</li>
+<li>p5.js、Processingでコードを書いて作品が作り、投稿できる。</li>
+<li>他者が作った作品・コードも見れる。</li>
+<li>使いたいライブラリがあったら、それを簡単に使用可能な状態にできる。</li>
+<li>チュートリアルモードがある。 etc…</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>p5.js Web Editor について</h3>
+<ul>
+<li>Web上で起動でき、p5.js でコードを書いて作品が作ることができる。</li>
+<li>サンプルが色々見れる。</li>
+<li>書いた作品のコードをダウンロードできる。</li>
+<li>自動更新がある。</li>
+<li>リンクを共有することで共同編集が可能 etc…</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>個人的な感想</h3>
+<ul>
+<li>OpenProcessing はコミュニティよりの機能も持ってる。(他の方の作品を見たり、genuaryみたいな行事にも対応があったり)</li>
+<li>p5.js Web Editor はあくまで作るための機能。だが共同編集が可能だったり、自動更新があったりとより便利な部分がある。</li>
+<li>また、HTMLにスケッチを貼り付けられる。(後述)</li>
+<li>両方にそれぞれ良点があり、どう使いたいかに応じて使い分ければ良いと思う。</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <iframe src="https://openprocessing.org/sketch/1716420/embed/?plusEmbedHash=NjMxYzM5NDQ4YTY4NDczMWQyOWIyYzY4YmY2YTIwYzEzNjg1YWVhNWVkNWI2Mzc4MGEyMzBjOTExOGI3ZGQwZTMyNGIzN2QyNjE5NjQwZTMzMTEyZGZmYmVmYzhiOTU3ZTYzYzQzNWE4NjRmNTZlZGQzYjllZDAyNzcyYzgyN2NWRWFKMGY4VUZhRkR3aENVTlQ4UE1GckU5R0hlakpXdWpTV0FnZnFHZEJmZmk2dFRKaGd0T0pkMkpZWmduNWkzOXdJWUFQaFFKOTEyZHZPaFFXWTFqZz09&plusEmbedTitle=true" width="800" height="800"></iframe>
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>個人的な感想</h3>
+<ul>
+<li>OpenProcessing はコミュニティよりの機能も持ってる。(他の方の作品を見たり、genuaryみたいな行事にも対応があったり)</li>
+<li>p5.js Web Editor はあくまで作るための機能。だが共同編集が可能だったり、自動更新があったりとより便利な部分がある。</li>
+<li>両方にそれぞれ良点があり、どう使いたいかに応じて使い分ければ良いと思う。</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>共通の欠点</h3>
+<ul>
+<li>ネットが動く環境でなければ使えないこと<br>
+-&gt; ネットがあるところでしか作業しないなら大丈夫だが、どこでも作業したい場合は場合によっては使用が出来ない。<br>
+-&gt; 別でネットがなくても動かせる環境を用意しておくのが個人的におすすめ。<br>
+-&gt; Visual Studio Codeなどのエディターなどを使う方法</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>自分のやり方の紹介</h2>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <p>※ あらかじめ申し上げますが、あくまで自分の方法の紹介です。自分が使いやすければそれが正解です。</p>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h2>使用しているもの</h2>
+<ul>
+<li>Visual Studio Code(エディタ)</li>
+<li>Live Preview(作品を表示する際に使用1)</li>
+<li>Live Server(作品を表示する際に使用2)</li>
+<li>p5js Snippets(補完)</li>
+<li>p5 Manager(プロジェクト生成)</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>Live Preview</h3>
+<ul>
+<li>HTML、CSS、JavaScriptのプレビュー確認が可能</li>
+<li>非常に使い方が簡単</li>
+<li>VSCodeの半分、またはブラウザに絵を表示して、コードで微調整する…などでも使える！</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>Live Server</h3>
+<ul>
+<li>通常p5.jsは作品をブラウザに表示させる。<br>
+-&gt; コードを修正した場合、ブラウザに更新をかけないといけない<br>
+-&gt; これを<font color = "red">自動化</font>してくれる！</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>p5js Snippets</h3>
+<ul>
+<li>p5.jsのコードを書く際にある程度<font color = "red">補完</font>してくれる！<br>
+-&gt; 補完 は関数とかを途中まで入力すると自動で関数の候補が表示され、それを押すと入力された状態になる。</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h3>p5 Manager</h3>
+<ul>
+<li>コマンドラインツールからプロジェクトを生成できるようになる。<br>
+-&gt; テンプレートとなるファイルがあり、それに対して自分がよく使う関数や変数を定義しておくことで、それが最初から記入された状態で始められる！</li>
+</ul>
+
+            </section>
+    
+
+
+
+    
+        <section >
+            
+            <h1>実演</h1>
 
             </section>
     
@@ -377,6 +435,11 @@ function draw() {
         <section >
             
             <h3>まとめ</h3>
+<ul>
+<li>p5.jsを始める上での方法をいくつか紹介しました。</li>
+<li>オフラインでも作業が出来る状態を作っておくのはおすすめです。</li>
+<li>今回紹介した方法が誰かの参考になったら嬉しいです。</li>
+</ul>
 
             </section>
     
@@ -426,7 +489,7 @@ function draw() {
 
 <script src="libs/reveal.js/4.3.1/plugin/zoom/zoom.js"></script>
 <script src="libs/reveal.js/4.3.1/plugin/search/search.js"></script>
-<script src="libs/reveal.js/4.3.1/plugin/menu/menu.js"></script>
+
 <script src="libs/reveal.js/4.3.1/plugin/chalkboard/plugin.js"></script>
 
 <!--	<script src="libs/reveal.js/4.3.1/plugin/audio-slideshow/plugin.js"></script>  -->
@@ -450,12 +513,12 @@ function draw() {
 		RevealZoom, 
 		RevealSearch, 
 				RevealMarkdown, 
-				RevealMenu, 
+				
 				RevealFullscreen,
 				RevealAnything,
 				//RevealAudioSlideshow,
 				//RevealAudioRecorder,
-				RevealCustomControls, 
+				
 				// poll
 				// question
 				// seminar
